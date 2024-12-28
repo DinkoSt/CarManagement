@@ -5,6 +5,7 @@ import fmi.plovdiv.carmanagement.dto.CreateCarDto;
 import fmi.plovdiv.carmanagement.dto.ResponseCarDto;
 import fmi.plovdiv.carmanagement.dto.UpdateCarDto;
 import fmi.plovdiv.carmanagement.entity.Car;
+import fmi.plovdiv.carmanagement.mapper.CarMapper;
 import fmi.plovdiv.carmanagement.repository.CarRepository;
 import fmi.plovdiv.carmanagement.repository.CarSpecifications;
 import lombok.RequiredArgsConstructor;
