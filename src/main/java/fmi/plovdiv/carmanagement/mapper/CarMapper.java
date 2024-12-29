@@ -13,7 +13,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CarMapper {
-    // Assuming garages are populated elsewhere
+    // Assuming garages are populated elsewher
     ResponseCarDto sourceToResponseDto(Car source);
 
     Car createDtoToSource(CreateCarDto createCarDto);
@@ -24,6 +24,9 @@ public interface CarMapper {
 @Mapping(target = "id", ignore = true) // Prevent overwriting the ID
 void updateCarFromDto(UpdateCarDto updateCarDto, @MappingTarget Car car);
 }
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-package fmi.plovdiv.carmanagement.entity;
+package fmi.plovdiv.carmanagement.entity;//package fmi.plovdiv.carmanagement.entity;
 
 
 import jakarta.persistence.*;
@@ -7,10 +7,14 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Table(name = "cars")
+@Entity
 @Getter
 @Setter
-public class Car extends BaseEntity {
+public class Car {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String make;
@@ -30,3 +34,6 @@ public class Car extends BaseEntity {
     private List<Long> garageIds;
 
 }
+
+
+

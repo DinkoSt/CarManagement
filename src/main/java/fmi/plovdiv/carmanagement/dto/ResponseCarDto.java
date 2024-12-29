@@ -3,8 +3,8 @@ package fmi.plovdiv.carmanagement.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
+
 @Getter
 @Setter
 public class ResponseCarDto {
@@ -13,6 +13,7 @@ public class ResponseCarDto {
     private String model;
     private Integer productionYear;
     private String licensePlate;
+    // FIXME: It is null!
     private List<ResponseGarageDto> garages;
 
 }

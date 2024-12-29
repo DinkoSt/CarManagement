@@ -1,6 +1,5 @@
 package fmi.plovdiv.carmanagement.dto;
 
-
 import lombok.Getter;
 import lombok.Setter;
 

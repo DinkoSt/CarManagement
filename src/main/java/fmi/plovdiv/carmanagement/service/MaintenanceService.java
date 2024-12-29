@@ -2,10 +2,15 @@ package fmi.plovdiv.carmanagement.service;
 
 
 import fmi.plovdiv.carmanagement.dto.*;
+import fmi.plovdiv.carmanagement.entity.Garage;
 import fmi.plovdiv.carmanagement.entity.Maintenance;
+import fmi.plovdiv.carmanagement.mapper.GarageMapper;
+import fmi.plovdiv.carmanagement.mapper.MaintenanceMapper;
 import fmi.plovdiv.carmanagement.repository.GarageRepository;
+import fmi.plovdiv.carmanagement.repository.GarageSpecifications;
 import fmi.plovdiv.carmanagement.repository.MaintenanceRepository;
 import fmi.plovdiv.carmanagement.repository.MaintenanceSpecifications;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,12 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MaintenanceService {
     private final MaintenanceRepository maintenanceRepository;
     private final CarService carService;
     private final GarageService garageService;
     private final GarageRepository garageRepository;
+    private final MaintenanceMapper maintenanceMapper;
 
 
     public ResponseMaintenanceDto getById(Long id) {
@@ -33,7 +39,7 @@ public class MaintenanceService {
         ResponseCarDto car = carService.getById(maintenance.getCarId());
         ResponseGarageDto garage = garageService.getById(maintenance.getGarageId());
         //get car info and garage info
-        return ResponseMaintenanceDto.fromMaintenance(maintenance, car.getMake(), garage.getName());
+        return maintenanceMapper.entityToResponseDto(maintenance, car.getMake(), garage.getName());
     }
 
     public ResponseMaintenanceDto update(Long id, UpdateMaintenanceDto updateMaintenanceDTO) {
@@ -49,11 +55,12 @@ public class MaintenanceService {
         if (scheduledMaintenances.size() >= garageCapacity) {
             throw new IllegalArgumentException("Scheduled maintenance capacity exceeds garage capacity, please choose another day");
         }
-        Maintenance updatedMaintenance = maintenanceRepository.save(Maintenance.fromUpdateMaintenanceDto(id, updateMaintenanceDTO));
+        maintenanceMapper.updateEntityFromDto(updateMaintenanceDTO, maintenance);
+        Maintenance updatedMaintenance = maintenanceRepository.save(maintenance);
         ResponseCarDto car = carService.getById(maintenance.getCarId());
         ResponseGarageDto garage = garageService.getById(maintenance.getGarageId());
         //get car info and garage info
-        return ResponseMaintenanceDto.fromMaintenance(updatedMaintenance, car.getMake(), garage.getName());
+        return maintenanceMapper.entityToResponseDto(updatedMaintenance, car.getMake(), garage.getName());
     }
 
     public void delete(Long id) {
@@ -67,7 +74,7 @@ public class MaintenanceService {
         for (Maintenance maintenance : maintenances) {
             ResponseCarDto car = carService.getById(maintenance.getCarId());
             ResponseGarageDto garage = garageService.getById(maintenance.getGarageId());
-            responseMaintenanceDtos.add(ResponseMaintenanceDto.fromMaintenance(maintenance, car.getMake(), garage.getName()));
+            responseMaintenanceDtos.add(maintenanceMapper.entityToResponseDto(maintenance, car.getMake(), garage.getName()));
         }
         return responseMaintenanceDtos;
     }
@@ -83,10 +90,10 @@ public class MaintenanceService {
             throw new IllegalArgumentException("Scheduled maintenance capacity exceeds garage capacity, please choose another day");
         }
 
-        Maintenance savedMaintenance = maintenanceRepository.save(Maintenance.fromCreateMaintenanceDto(createMaintenanceDTO));
+        Maintenance savedMaintenance = maintenanceRepository.save(maintenanceMapper.createDtoToEntity(createMaintenanceDTO));
         ResponseCarDto car = carService.getById(createMaintenanceDTO.getCarId());
         ResponseGarageDto garage = garageService.getById(createMaintenanceDTO.getGarageId());
-        return ResponseMaintenanceDto.fromMaintenance(savedMaintenance, car.getMake(), garage.getName());
+        return maintenanceMapper.entityToResponseDto(savedMaintenance, car.getMake(), garage.getName());
     }
 
     public List<MonthlyRequestsReportDto> getMonthlyRequestReport(Long garageId, String startMonth, String endMonth) {
@@ -129,7 +136,7 @@ public class MaintenanceService {
        maintenanceRepository.findAll(spec).forEach(maintenance -> {
             ResponseCarDto car = carService.getById(maintenance.getCarId());
             ResponseGarageDto garage = garageService.getById(maintenance.getGarageId());
-            ResponseMaintenanceDto responseMaintenanceDto = ResponseMaintenanceDto.fromMaintenance(maintenance, car.getMake(), garage.getName());
+            ResponseMaintenanceDto responseMaintenanceDto = maintenanceMapper.entityToResponseDto(maintenance, car.getMake(), garage.getName());
             responseMaintenanceDtos.add(responseMaintenanceDto);
         });
 

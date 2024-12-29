@@ -6,10 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-
 public class GarageDailyAvailabilityReportDto {
     private String date;
     private Integer requests;
     private Integer availableCapacity;
-
 }

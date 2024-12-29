@@ -7,7 +7,6 @@ import java.time.YearMonth;
 
 @Getter
 @Setter
-
 public class MonthlyRequestsReportDto {
     private YearMonth yearMonth;
     private Integer requests;

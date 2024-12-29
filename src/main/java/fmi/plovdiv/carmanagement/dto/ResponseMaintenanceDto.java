@@ -1,6 +1,7 @@
 package fmi.plovdiv.carmanagement.dto;
 
 
+import fmi.plovdiv.carmanagement.entity.Maintenance;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +15,4 @@ public class ResponseMaintenanceDto {
     private String scheduledDate;
     private Long garageId;
     private String garageName;
-
 }
