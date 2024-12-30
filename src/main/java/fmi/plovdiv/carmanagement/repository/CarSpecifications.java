@@ -12,6 +12,6 @@ public class CarSpecifications {
 
     public static Specification<Car> hasGarageId(Long garageId) {
         return (root, _, criteriaBuilder) ->
-                garageId != null ? criteriaBuilder.equal(root.get("garageId"), garageId) : criteriaBuilder.conjunction();
+                garageId != null ? criteriaBuilder.equal(root.get("garages"), garageId) : criteriaBuilder.conjunction();
     }
 }

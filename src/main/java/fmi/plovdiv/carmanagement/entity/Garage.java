@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -24,6 +27,8 @@ public class Garage {
 
     @Column(nullable = false)
     private Integer capacity;
+
+    @ManyToMany(mappedBy = "garages")
+    private List<Car> cars = new ArrayList<>();
+
 }
-
-

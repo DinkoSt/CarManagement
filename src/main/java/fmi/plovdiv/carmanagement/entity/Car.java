@@ -3,8 +3,10 @@ package fmi.plovdiv.carmanagement.entity;//package fmi.plovdiv.carmanagement.ent
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,12 +30,8 @@ public class Car {
     @Column(nullable = false)
     private String licensePlate;
 
-    @ElementCollection
-    @CollectionTable(name = "car_garage_ids", joinColumns = @JoinColumn(name = "car_id"))
-    @Column(name = "garage_id")
-    private List<Long> garageIds;
+    @ManyToMany
+    @JoinTable(name = "car_garage_ids", joinColumns = @JoinColumn(name = "car_id"), inverseJoinColumns = @JoinColumn(name = "garage_id"))
+    private List<Garage> garages = new ArrayList<>();
 
 }
-
-
-

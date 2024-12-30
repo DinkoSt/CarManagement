@@ -1,9 +1,7 @@
 package fmi.plovdiv.carmanagement.mapper;
 
-import fmi.plovdiv.carmanagement.dto.CreateGarageDto;
-import fmi.plovdiv.carmanagement.dto.GarageDailyAvailabilityReportDto;
-import fmi.plovdiv.carmanagement.dto.ResponseGarageDto;
-import fmi.plovdiv.carmanagement.dto.UpdateGarageDto;
+import fmi.plovdiv.carmanagement.dto.*;
+import fmi.plovdiv.carmanagement.entity.Car;
 import fmi.plovdiv.carmanagement.entity.Garage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +13,8 @@ import java.util.List;
 public interface GarageMapper {
 
     // Map from Garage entity to ResponseGarageDto
-    ResponseGarageDto entityToResponseDto(Garage garage);
+    ResponseGarageDto entityToResponseDto(Garage car);
+    ResponseCarDto entityToResponseDto(Car car);
 
     // Map from CreateGarageDto to Garage entity
     Garage createDtoToEntity(CreateGarageDto createGarageDto);

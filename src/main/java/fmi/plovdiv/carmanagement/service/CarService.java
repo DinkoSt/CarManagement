@@ -12,15 +12,16 @@ import fmi.plovdiv.carmanagement.mapper.GarageMapper;
 import fmi.plovdiv.carmanagement.repository.CarRepository;
 import fmi.plovdiv.carmanagement.repository.CarSpecifications;
 import fmi.plovdiv.carmanagement.repository.GarageRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -36,12 +37,7 @@ public class CarService {
         Car car = carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Car with ID %s not found", id)));
         return carMapper.sourceToResponseDto(car);
     }
-//
-//    public ResponseCarDto update(Long id, UpdateCarDto updateCarDTO) {
-//        Car car = carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Car with ID %s not found", id)));
-//        Car updatedCar = carRepository.save(carMapper.updateDtoToSource(updateCarDTO));
-//        return carMapper.sourceToResponseDto(updatedCar);
-//    }
+
 public ResponseCarDto update(Long id, UpdateCarDto updateCarDTO) {
     Car existingCar = carRepository.findById(id).orElseThrow(() ->
             new IllegalArgumentException(String.format("Car with ID %s not found", id)));
@@ -59,40 +55,29 @@ public ResponseCarDto update(Long id, UpdateCarDto updateCarDTO) {
 
     public List<ResponseCarDto> getAll(String make, Long garageId) {
         List<ResponseCarDto> responseCarDtosList = new ArrayList<>();
-        List<ResponseGarageDto> responseGarageDtosList = new ArrayList<>();
+        ResponseCarDto responseCarDto = new ResponseCarDto();
+        responseCarDto.setGarages(new ArrayList<>());
 
         Specification<Car> spec = Specification
                 .where(CarSpecifications.hasCarMake(make))
                 .and(CarSpecifications.hasGarageId(garageId));
 
-        garageRepository.findAll().forEach(garage ->{
-
-            ResponseGarageDto responseGarageDto = garageMapper.entityToResponseDto(garage);
-            responseGarageDtosList.add(responseGarageDto);
-                }
-        );
-
-        carRepository.findAll(spec).forEach(car -> {
-            ResponseCarDto responseCarDto = carMapper.sourceToResponseDto(car);
-            responseCarDto.setGarages(responseGarageDtosList);
-            responseCarDtosList.add(responseCarDto);
-        });
+        carRepository.findAll(spec).forEach(car -> responseCarDtosList.add(garageMapper.entityToResponseDto(car)));
 
 
         return responseCarDtosList;
     }
 
     public ResponseCarDto create(CreateCarDto createCarDTO) {
-        Car savedCar = carRepository.save(carMapper.createDtoToSource(createCarDTO));
-        ResponseCarDto responseCarDto = carMapper.sourceToResponseDto(savedCar);
-        responseCarDto.setGarages(new ArrayList<>());
-        savedCar.getGarageIds().forEach(g -> {
-            Optional<Garage> garage = garageRepository.findById(g);
-            if (garage.isPresent()) {
-                responseCarDto.getGarages().add(garageMapper.entityToResponseDto(garage.get()));
-            }
+        Car entityCar = carMapper.createDtoToSource(createCarDTO);
+        for (Garage it : garageRepository.findAllById(createCarDTO.getGarageIds())) {
+            entityCar.getGarages().add(it);
 
-        });
+        }
+
+        Car savedCar = carRepository.save(entityCar);
+        ResponseCarDto responseCarDto = carMapper.sourceToResponseDto(savedCar);
+        responseCarDto.setGarages(garageMapper.entitiesToResponseDtos(savedCar.getGarages()));
         return responseCarDto;
     }
 }

@@ -23,12 +23,14 @@ public class CarController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseCarDto> getCarById(@PathVariable Long id) {
         ResponseCarDto responseCarDto = carService.getById(id);
+        System.out.println(responseCarDto + "get");
         return ResponseEntity.ok(responseCarDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseCarDto> updateCar(@PathVariable Long id, @RequestBody @Valid UpdateCarDto updateCarDTO) {
         ResponseCarDto responseCarDto = carService.update(id, updateCarDTO);
+        System.out.println(responseCarDto);
         return ResponseEntity.ok(responseCarDto);
     }
 
@@ -42,6 +44,7 @@ public class CarController {
     public ResponseEntity<List<ResponseCarDto>> getAllCars(@RequestParam(required = false) String carMake,
                                                            @RequestParam(required = false) Long garageId) {
         List<ResponseCarDto> responseCarDtosList = carService.getAll(carMake, garageId);
+        System.out.println( responseCarDtosList + "get111111");
         return ResponseEntity.ok(responseCarDtosList);
     }
 //    @GetMapping
