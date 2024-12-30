@@ -56,7 +56,7 @@ public class GarageController {
     public ResponseEntity<List<GarageDailyAvailabilityReportDto>> getGarageReport(@RequestParam Long garageId,
                                                                                   @RequestParam String startDate,
                                                                                   @RequestParam String endDate) {
-        List<GarageDailyAvailabilityReportDto> availabilityReports = garageService.getReport(garageId, startDate, endDate);
-        return ResponseEntity.ok(availabilityReports);
+//        List<GarageDailyAvailabilityReportDto> availabilityReports = garageService.getReport(garageId, startDate, endDate);
+        return ResponseEntity.ok(garageService.getGarageDailyAvailabilityReport(garageId,startDate,endDate));
     }
 }

@@ -6,14 +6,18 @@ import fmi.plovdiv.carmanagement.dto.GarageDailyAvailabilityReportDto;
 import fmi.plovdiv.carmanagement.dto.ResponseGarageDto;
 import fmi.plovdiv.carmanagement.dto.UpdateGarageDto;
 import fmi.plovdiv.carmanagement.entity.Garage;
+import fmi.plovdiv.carmanagement.entity.Maintenance;
 import fmi.plovdiv.carmanagement.mapper.GarageMapper;
 import fmi.plovdiv.carmanagement.repository.GarageRepository;
 import fmi.plovdiv.carmanagement.repository.GarageSpecifications;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,9 +101,53 @@ public class GarageService {
         garageRepository.deleteById(id);
     }
 
-    public List<GarageDailyAvailabilityReportDto> getReport(Long garageId, String startDate, String endDate) {
-        List<GarageDailyAvailabilityReportDto> responseGarageDailyAvailabilityReportDtoList = new ArrayList<>();
-        System.out.println("Garage report ");
-        return responseGarageDailyAvailabilityReportDtoList;
+//    public List<GarageDailyAvailabilityReportDto> getReport(Long garageId, String startDate, String endDate) {
+//        List<GarageDailyAvailabilityReportDto> responseGarageDailyAvailabilityReportDtoList = new ArrayList<>();
+//        System.out.println("Garage report ");
+//        return responseGarageDailyAvailabilityReportDtoList;
+//    }
+//public List<GarageDailyAvailabilityReportDto> getGarageDailyAvailabilityReport(Long garageId, String startDate, String endDate) {
+//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//    LocalDate start = LocalDate.parse(startDate, formatter);
+//    LocalDate end = LocalDate.parse(endDate, formatter);
+//    List<GarageDailyAvailabilityReportDto> report = new ArrayList<>();
+//    for (LocalDate currentDate = start; !currentDate.isAfter(end); currentDate = currentDate.plusDays(1)) {
+//        List<Maintenance> requests = garageRepository.countByGarageIdAndScheduledDate(garageId, currentDate.toString());
+//        Garage garage = garageRepository.findById(garageId)
+//                .orElseThrow(() -> new EntityNotFoundException("Garage not found with id: " + garageId));
+//        int availableCapacity = garage.getCapacity() - requests;
+//        GarageDailyAvailabilityReportDto dailyReport = new GarageDailyAvailabilityReportDto(
+//                currentDate.toString(),
+//                requests,
+//                availableCapacity
+//        );
+//        report.add(dailyReport);
+//    }
+//    return report;
+//}
+public List<GarageDailyAvailabilityReportDto> getGarageDailyAvailabilityReport(Long garageId, String startDate, String endDate) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDate start = LocalDate.parse(startDate, formatter);
+    LocalDate end = LocalDate.parse(endDate, formatter);
+    List<GarageDailyAvailabilityReportDto> report = new ArrayList<>();
+
+    for (LocalDate currentDate = start; !currentDate.isAfter(end); currentDate = currentDate.plusDays(1)) {
+        List<Maintenance> maintenanceRequests = garageRepository.countByGarageIdAndScheduledDate(garageId, currentDate.toString());
+        int requestsCount = maintenanceRequests.size(); // Get the number of requests
+
+        Garage garage = garageRepository.findById(garageId)
+                .orElseThrow(() -> new EntityNotFoundException("Garage not found with id: " + garageId));
+        int availableCapacity = garage.getCapacity() - requestsCount; // Subtract the count from capacity
+
+        GarageDailyAvailabilityReportDto dailyReport = new GarageDailyAvailabilityReportDto(
+                currentDate.toString(),
+                requestsCount, // Use the size of the list as the requests count
+                availableCapacity
+        );
+        report.add(dailyReport);
     }
+
+    return report;
+}
+
 }

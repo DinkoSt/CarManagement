@@ -58,9 +58,9 @@ public class MaintenanceController {
     public ResponseEntity<List<MonthlyRequestsReportDto>> monthlyRequestsReport(@RequestParam Long garageId,
                                                                                 @RequestParam String startMonth,
                                                                                 @RequestParam String endMonth) {
-        List<MonthlyRequestsReportDto> monthlyRequestsReportDtos =
+        List<MonthlyRequestsReportDto> monthlyRequestReportDTO =
                 maintenanceService.getMonthlyRequestReport(garageId, startMonth, endMonth);
-        return ResponseEntity.ok(monthlyRequestsReportDtos);
+        return ResponseEntity.ok(monthlyRequestReportDTO);
     }
 }
 
