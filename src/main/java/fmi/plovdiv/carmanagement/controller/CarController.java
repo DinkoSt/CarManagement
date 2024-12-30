@@ -47,10 +47,6 @@ public class CarController {
         System.out.println( responseCarDtosList + "get111111");
         return ResponseEntity.ok(responseCarDtosList);
     }
-//    @GetMapping
-//    public List <ResponseCarDto> getAllCars(){
-//        return carService.getAll();
-//    }
 
     @PostMapping
     public ResponseEntity<ResponseCarDto> createCar(@RequestBody @Valid CreateCarDto createCarDTO) {

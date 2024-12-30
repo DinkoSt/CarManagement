@@ -99,6 +99,7 @@ public class GarageService {
 
     public List<GarageDailyAvailabilityReportDto> getReport(Long garageId, String startDate, String endDate) {
         List<GarageDailyAvailabilityReportDto> responseGarageDailyAvailabilityReportDtoList = new ArrayList<>();
+        System.out.println("Garage report ");
         return responseGarageDailyAvailabilityReportDtoList;
     }
 }
