@@ -53,14 +53,15 @@ public ResponseCarDto update(Long id, UpdateCarDto updateCarDTO) {
         carRepository.deleteById(id);
     }
 
-    public List<ResponseCarDto> getAll(String make, Long garageId) {
+    public List<ResponseCarDto> getAll(String make, Long garageId,Integer fromYear, Integer toYear) {
         List<ResponseCarDto> responseCarDtosList = new ArrayList<>();
         ResponseCarDto responseCarDto = new ResponseCarDto();
         responseCarDto.setGarages(new ArrayList<>());
 
         Specification<Car> spec = Specification
                 .where(CarSpecifications.hasCarMake(make))
-                .and(CarSpecifications.hasGarageId(garageId));
+                .and(CarSpecifications.hasGarageId(garageId))
+                .and(CarSpecifications.hasProductionYearBetween(fromYear, toYear));
 
         carRepository.findAll(spec).forEach(car -> responseCarDtosList.add(garageMapper.entityToResponseDto(car)));
 
